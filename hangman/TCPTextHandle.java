@@ -66,4 +66,9 @@ public class TCPTextHandle implements Handle<String> {
 			/* Whatever happened, there's nothing to do about it. */
 		}
 	}
+	
+	public Socket getSocket ()
+	{
+	  return socket;
+	}
 }

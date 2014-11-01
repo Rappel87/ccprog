@@ -6,28 +6,45 @@ import reactorapi.Handle;
 public class TCPTextHandler implements EventHandler <String>
 {
   
-  Hangmanserver server;
-  Handle<String> handle;
+  private Hangmanserver server;
+  private TCPTextHandle handle;
+  private boolean notFirst;
+  private String name;
 
 
-  public TCPTextHandler (Handle <String> handle, Hangmanserver server)
+  public TCPTextHandler (TCPTextHandle handle, Hangmanserver server)
   {
-    this.handle = handle;
-    this.server = server;
+    this.handle    = handle;
+    this.server    = server;
+    /* Indicates if the socket received its first message or not */
+    this.notFirst  = false;
+    this.name      = null;
   }
 
   @Override
   public Handle<String> getHandle ()
   {
-    // TODO Auto-generated method stub
-    return null;
+    return handle;
   }
 
   @Override
   public void handleEvent (String s)
   {
-    // TODO Auto-generated method stub
-
+    String trimmed = null;
+    
+    trimmed = s.trim ();
+    
+    if (notFirst)
+    {
+      server.guess (trimmed.charAt (0), name);
+    }
+    else
+    {
+      /* First time -> add new player */
+      server.addNewPlayer (handle.getSocket(), trimmed);
+      name = s;
+      notFirst = true;
+    }
   }
 
 }

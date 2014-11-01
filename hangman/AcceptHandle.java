@@ -2,6 +2,7 @@ package hangman;
 
 import java.net.*;
 import java.io.*;
+
 import reactorapi.*;
 
 /**
@@ -18,8 +19,9 @@ public class AcceptHandle implements Handle<Socket> {
 	 *             if no free ports exist or another rare IO error occurs.
 	 */
 	public AcceptHandle() throws IOException {
-		socket = new ServerSocket(0);
-		System.out.println("" + socket.getLocalPort());
+	  InetAddress addr = InetAddress.getByName("127.0.0.1");
+		socket = new ServerSocket(56953,0, addr);
+		System.out.println("Server-IP: " +  socket.getInetAddress () + "Server-Port: " + socket.getLocalPort());
 		System.out.flush();
 	}
 

@@ -2,7 +2,6 @@ package hangman;
 
 import java.net.Socket;
 
-import reactor.WorkerThread;
 import reactorapi.EventHandler;
 import reactorapi.Handle;
 
