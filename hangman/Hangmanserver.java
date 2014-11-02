@@ -15,12 +15,14 @@ public class Hangmanserver
 {
   private Dispatcher disp;
   private HangmanRules<Socket> rules;
+  private boolean finished;
   
   
   public Hangmanserver (String wordToGuess, Integer numberOfTries)
   {
     disp = new Dispatcher ();
     rules = new HangmanRules<Socket> (wordToGuess, numberOfTries);
+    finished = false;
     
   }
   
@@ -35,15 +37,22 @@ public class Hangmanserver
     disp.removeHandler (eh);
   }
   
-  public void addNewPlayer (Socket s, String name)
+  public HangmanRules<Socket>.Player addNewPlayer (Socket s, String name)
   {
-    this.rules.addNewPlayer (s, name);
+    return this.rules.addNewPlayer (s, name);
+  }
+  
+  public String getStatus ()
+  {
+    return this.rules.getStatus ();
   }
   
   public void guess (char guess, String name)
   {
-    boolean finished = false;
-    finished = rules.makeGuess (guess);
+    
+    
+    rules.makeGuess (guess);
+    finished = rules.gameEnded ();
     
     writeMsgToPlayers (getGameState(guess, name));
     
@@ -80,7 +89,6 @@ public class Hangmanserver
       
       /* Cancel the thread and remove its handler from the dispatcher */
       disp.removeHandler (eh);
-      thread.cancelThread ();
     }
   }
 
@@ -109,7 +117,7 @@ public class Hangmanserver
     int tries         = rules.getTriesLeft ();
     String maskedWord = rules.getMaskedWord ();
     
-    sb.append (tries);
+    sb.append (guess);
     sb.append (" ");
     sb.append (maskedWord);
     sb.append (" ");

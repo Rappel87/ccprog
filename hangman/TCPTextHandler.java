@@ -1,15 +1,18 @@
 package hangman;
 
+import java.net.Socket;
+
+import hangmanrules.HangmanRules;
 import reactorapi.EventHandler;
 import reactorapi.Handle;
 
 public class TCPTextHandler implements EventHandler <String>
 {
-  
+
   private Hangmanserver server;
   private TCPTextHandle handle;
   private boolean notFirst;
-  private String name;
+  private HangmanRules<Socket>.Player player;
 
 
   public TCPTextHandler (TCPTextHandle handle, Hangmanserver server)
@@ -18,7 +21,7 @@ public class TCPTextHandler implements EventHandler <String>
     this.server    = server;
     /* Indicates if the socket received its first message or not */
     this.notFirst  = false;
-    this.name      = null;
+    this.player    = null;
   }
 
   @Override
@@ -31,20 +34,19 @@ public class TCPTextHandler implements EventHandler <String>
   public void handleEvent (String s)
   {
     String trimmed = null;
-    
+
     trimmed = s.trim ();
-    
+
     if (notFirst)
     {
-      server.guess (trimmed.charAt (0), name);
+      server.guess (trimmed.charAt (0), player.name);
     }
     else
     {
       /* First time -> add new player */
-      server.addNewPlayer (handle.getSocket(), trimmed);
-      name = s;
+      player = server.addNewPlayer (handle.getSocket(), trimmed);
+      handle.write (server.getStatus ());
       notFirst = true;
     }
   }
-
 }

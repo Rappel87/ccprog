@@ -19,10 +19,8 @@ public class Semaphore {
    * wait()ing in acquire().
    */
   public synchronized void release() {
-    if (counter == 0) {
-      this.notify();
-    }
     counter++;
+    this.notify ();
   }
   /**
    * Decrements internal counter, blocking if the counter is already
