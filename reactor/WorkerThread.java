@@ -37,7 +37,8 @@ public class WorkerThread<T> extends Thread {
         this.queue.put (ev);
       } catch (InterruptedException e)
       {
-        e.printStackTrace();
+        /* Got interrupted -> so just end the thread */
+        break;
       }
     }
     // TODO: Implement WorkerThread.run().
