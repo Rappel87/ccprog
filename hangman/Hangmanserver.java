@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import hangmanrules.HangmanRules;
 import reactor.*;
@@ -70,12 +72,16 @@ public class Hangmanserver
     HashMap<EventHandler <?>, WorkerThread <?>> map = null;
     
     map = disp.getMap ();
-    
-    for (EventHandler<?> eh: map.keySet ())
+    //for (EventHandler<?> eh: map.keySet ())
+
+    Iterator it = map.keySet().iterator();
+
+    while (it.hasNext())
     {
+      EventHandler eh = (EventHandler) it.next();
+      handle = eh.getHandle();
       thread = map.get (eh);
-      handle = eh.getHandle ();
-      
+
       /* If it is the server-socket, then close it */
       if (handle instanceof AcceptHandle)
       {
@@ -86,10 +92,17 @@ public class Hangmanserver
       {
         ((TCPTextHandle) handle).close ();
       }
-      
-      /* Cancel the thread and remove its handler from the dispatcher */
-      disp.removeHandler (eh);
+
+    if (thread != null)
+    {
+        thread.cancelThread ();
     }
+   // map.remove(eh);
+
+      /* Cancel the thread and remove its handler from the dispatcher */
+     //disp.removeHandler (eh);
+    }
+   map.clear();
   }
 
   public void writeMsgToPlayers (String msg)
@@ -134,8 +147,11 @@ public class Hangmanserver
     AcceptHandle ahandle = null;
     AcceptHandler ah     = null;
     WorkerThread<Socket> thread = null;
-    
-    Hangmanserver server = new Hangmanserver ("Kindergarten", 10);
+
+    //test work for a word of 11 letters..
+    Hangmanserver server = new Hangmanserver ("concurrency", 10);
+
+    //Hangmanserver server = new Hangmanserver ("awaaaa", 3);
     
     try
     {

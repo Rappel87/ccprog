@@ -5,7 +5,7 @@ import reactorapi.BlockingQueue;
 import java.util.LinkedList;
 import java.util.List;
 
-import hangman.Mutex;
+//import hangman.Mutex;
 import hangman.Semaphore;
 
 public class BlockingEventQueue<T> implements BlockingQueue<Event<? extends T>> {
@@ -76,9 +76,33 @@ public class BlockingEventQueue<T> implements BlockingQueue<Event<? extends T>> 
   }
 
   public synchronized List<Event<? extends T>> getAll() {
-    throw new UnsupportedOperationException(); // Replace this.
-    // TODO: Implement BlockingEventQueue.getAll().
+      List<Event<? extends T>> tmp = new LinkedList<Event<? extends T>>();
+
+      try {
+          empty.acquire ();
+      } catch (InterruptedException e) {
+          e.printStackTrace();
+      }
+    /* Start of CS */
+      //mutex.acquire ();
+      synchronized (this)
+      {
+          while (!queue.isEmpty()) {
+            tmp.add( queue.removeFirst());
+          }
+      }
+      //mutex.release ();
+    /* End of CS */
+
+      full.release ();
+
+      if (DEBUG)
+      {
+          System.out.println ("remove all List:");
+      }
+      return (List<Event<? extends T>>) tmp;
   }
+
 
   public void put(Event<? extends T> event) throws InterruptedException {
 
