@@ -34,7 +34,7 @@ public interface BlockingQueue<T> {
 	 * 
 	 * @return the entire queue
 	 */
-	public List<T> getAll() throws InterruptedException;
+	public List<T> getAll();
 
 	/**
 	 * Get the capacity of the queue.

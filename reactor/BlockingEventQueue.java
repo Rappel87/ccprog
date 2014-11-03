@@ -5,7 +5,6 @@ import reactorapi.BlockingQueue;
 import java.util.LinkedList;
 import java.util.List;
 
-//import hangman.Mutex;
 import hangman.Semaphore;
 
 public class BlockingEventQueue<T> implements BlockingQueue<Event<? extends T>> {
@@ -31,7 +30,7 @@ public class BlockingEventQueue<T> implements BlockingQueue<Event<? extends T>> 
 
   public int getSize() {
     Integer tmp = null;
-    
+
     try
     {
       mutex.acquire ();
@@ -76,31 +75,31 @@ public class BlockingEventQueue<T> implements BlockingQueue<Event<? extends T>> 
   }
 
   public synchronized List<Event<? extends T>> getAll() {
-      List<Event<? extends T>> tmp = new LinkedList<Event<? extends T>>();
+    List<Event<? extends T>> tmp = new LinkedList<Event<? extends T>>();
 
-      try {
-          empty.acquire ();
-      } catch (InterruptedException e) {
-          e.printStackTrace();
-      }
+    try {
+      empty.acquire ();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
     /* Start of CS */
-      //mutex.acquire ();
-      synchronized (this)
-      {
-          while (!queue.isEmpty()) {
-            tmp.add( queue.removeFirst());
-          }
+    //mutex.acquire ();
+    synchronized (this)
+    {
+      while (!queue.isEmpty()) {
+        tmp.add( queue.removeFirst());
       }
-      //mutex.release ();
+    }
+    //mutex.release ();
     /* End of CS */
 
-      full.release ();
+    full.release ();
 
-      if (DEBUG)
-      {
-          System.out.println ("remove all List:");
-      }
-      return (List<Event<? extends T>>) tmp;
+    if (DEBUG)
+    {
+      System.out.println ("remove all List:");
+    }
+    return (List<Event<? extends T>>) tmp;
   }
 
 

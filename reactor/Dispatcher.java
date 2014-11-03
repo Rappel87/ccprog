@@ -1,15 +1,12 @@
 package reactor;
 
 import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
 
-import hangman.Semaphore;
 import reactorapi.*;
 
 public class Dispatcher {
   private BlockingEventQueue<Object> queue;
   private HashMap<EventHandler <?>, WorkerThread <?>> map;
-  private Semaphore sem = new Semaphore(1);
 
   public Dispatcher() {
     this(10);
@@ -28,7 +25,7 @@ public class Dispatcher {
     {
       ev = select ();
       eh = ev.getHandler ();
-      
+
       /* remove the handler, if event is null */
       if (ev.getEvent () == null)
       {
@@ -36,8 +33,7 @@ public class Dispatcher {
         /* just get the next event */
         continue;
       }
-      /* we need to pass the "event"(socket/message), but not possible in the generic way... */
-      //eh.handleEvent ((Event) ev.getEvent ());
+
       /* Only dispatch if the handler is still registered */
 
       if ((eh != null) && (map.containsKey (eh)))
@@ -53,6 +49,7 @@ public class Dispatcher {
 
   public  <T> void addHandler(EventHandler<?> h) {
     WorkerThread <T> thread = new WorkerThread<T> ((EventHandler<T>) h, queue);
+
     map.put (h, thread);
     thread.start ();
   }
@@ -65,7 +62,6 @@ public class Dispatcher {
     {
       thread.cancelThread ();
     }
-
     map.remove (h);
   }
 
