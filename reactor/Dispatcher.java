@@ -27,12 +27,14 @@ public class Dispatcher {
       eh = ev.getHandler ();
 
       /* remove the handler, if event is null */
-      if (ev.getEvent () == null)
-      {
-        removeHandler (eh);
+        // do that in handleEvent of the related handlers
+      //if (ev.getEvent () == null)
+      //{
+
+       // removeHandler (eh);
         /* just get the next event */
-        continue;
-      }
+       // continue;
+      //}
 
       /* Only dispatch if the handler is still registered */
 

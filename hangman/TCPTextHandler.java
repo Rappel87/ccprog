@@ -30,23 +30,33 @@ public class TCPTextHandler implements EventHandler <String>
     return handle;
   }
 
+  public void removeMe() {
+      server.removeHandler(this);
+  }
+
   @Override
   public void handleEvent (String s)
   {
-    String trimmed = null;
-
-    trimmed = s.trim ();
-
-    if (notFirst)
-    {
-      server.guess (trimmed.charAt (0), player.name);
+    // get a NULL event meaning that socket was closed by the client
+    if (s == null) {
+        server.removeHandler(this);
     }
-    else
-    {
-      /* First time -> add new player */
-      player = server.addNewPlayer (handle.getSocket(), trimmed);
-      handle.write (server.getStatus ());
-      notFirst = true;
+    else {
+        String trimmed = null;
+
+        trimmed = s.trim ();
+
+        if (notFirst)
+        {
+          server.guess (trimmed.charAt (0), player.name);
+        }
+        else
+        {
+          /* First time -> add new player */
+          player = server.addNewPlayer (handle.getSocket(), trimmed);
+          handle.write (server.getStatus ());
+          notFirst = true;
+        }
     }
   }
 }

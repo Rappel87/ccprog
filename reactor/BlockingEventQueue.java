@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import hangman.Semaphore;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class BlockingEventQueue<T> implements BlockingQueue<Event<? extends T>> {
 
@@ -75,31 +76,7 @@ public class BlockingEventQueue<T> implements BlockingQueue<Event<? extends T>> 
   }
 
   public synchronized List<Event<? extends T>> getAll() {
-    List<Event<? extends T>> tmp = new LinkedList<Event<? extends T>>();
-
-    try {
-      empty.acquire ();
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-    /* Start of CS */
-    //mutex.acquire ();
-    synchronized (this)
-    {
-      while (!queue.isEmpty()) {
-        tmp.add( queue.removeFirst());
-      }
-    }
-    //mutex.release ();
-    /* End of CS */
-
-    full.release ();
-
-    if (DEBUG)
-    {
-      System.out.println ("remove all List:");
-    }
-    return (List<Event<? extends T>>) tmp;
+      throw new NotImplementedException();
   }
 
 
@@ -108,7 +85,7 @@ public class BlockingEventQueue<T> implements BlockingQueue<Event<? extends T>> 
     full.acquire ();
 
     /* Start CS */
-    //mutex.acquire ();7
+    //mutex.acquire ();
     synchronized (this)
     {
       queue.addLast ((Event<? extends T>) event);

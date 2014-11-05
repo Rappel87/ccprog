@@ -1,5 +1,6 @@
 package reactor;
 
+import hangman.TCPTextHandler;
 import reactorapi.EventHandler;
 
 public class Event<T> {
@@ -20,6 +21,6 @@ public class Event<T> {
 	}
 
 	public void handle() {
-	  handler.handleEvent (event);
+	    handler.handleEvent (event);
 	}
 }
